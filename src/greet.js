@@ -9,6 +9,9 @@
  * @returns {string} Greeting message
  */
 function greet(name, salutation = 'Hello') {
+  if (typeof salutation !== 'string') {
+    salutation = 'Hello';
+  }
   if (!name || typeof name !== 'string') {
     return salutation + ', World!';
   }

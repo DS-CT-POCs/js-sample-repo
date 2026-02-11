@@ -8,15 +8,22 @@ const { add, multiply, square } = require('../src/math');
 const { greet, farewell } = require('../src/greet');
 const { clamp, sum, isPositiveInteger } = require('../src/utils');
 
-function assert(condition, message) {
-  if (!condition) throw new Error('Assertion failed: ' + message);
+function assert(condition, message, actual, expected) {
+  if (!condition) {
+    const detail = (actual !== undefined && expected !== undefined)
+      ? ` Actual: ${actual}, Expected: ${expected}` : '';
+    throw new Error('Assertion failed: ' + message + detail);
+  }
 }
 
 function run() {
   // math
-  assert(add(1, 2) === 3, 'add(1, 2) === 3');
-  assert(multiply(3, 4) === 12, 'multiply(3, 4) === 12');
-  assert(square(5) === 25, 'square(5) === 25');
+  assert(add(1, 2) === 3, 'add(1, 2) === 3', add(1, 2), 3);
+  assert(multiply(3, 4) === 12, 'multiply(3, 4) === 12', multiply(3, 4), 12);
+  assert(square(5) === 25, 'square(5) === 25', square(5), 25);
+  assert(add(0, 0) === 0, 'add(0, 0) === 0');
+  assert(multiply(-1, 3) === -3, 'multiply(-1, 3) === -3');
+  assert(square(0) === 0, 'square(0) === 0');
 
   // greet
   assert(greet('Alice') === 'Hello, Alice!', 'greet("Alice")');
