@@ -1,41 +1,161 @@
-# js-sample-repo
+# 🚀 YOLO Object Detection Web App
 
-A small JavaScript sample repository for RAG ingestion and query tests. It provides a few modules with clear functions so an agent can answer questions about behavior, usage, and TODOs.
+<div align="center">
+<img src="./preview.png" width="60%" alt="YOLO Object Detection Preview">
 
-## License
+<br>
 
-MIT. See [LICENSE](LICENSE).
+[![ONNX Runtime Web](https://img.shields.io/badge/ONNX%20Runtime-Web-blue)](https://onnxruntime.ai/)
+[![YOLO](https://img.shields.io/badge/YOLO-v11%2Fv12-green)](https://github.com/ultralytics/ultralytics)
+[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
-## Modules and functions
+</div>
 
-### `src/math.js`
+## 📖 Introduction
 
-- **`add(a, b)`** — Returns the sum of two numbers.
-- **`multiply(a, b)`** — Returns the product of two numbers.
-- **`square(n)`** — Returns `n * n` (uses `multiply` internally).
+This web application, built on **ONNX Runtime Web**, brings the power of YOLO object detection directly to your browser. It supports full client-side inference without sending data to a server, offering privacy and low latency.
 
-### `src/greet.js`
+## ⚠️ WebGPU Prerequisites (Important)
 
-- **`greet(name, salutation?)`** — Returns a greeting string. Optional `salutation` defaults to `'Hello'`. If `name` is missing or not a string, returns a "Hello, World!" style message.
-- **`farewell(name)`** — Returns a goodbye message (uses `greet` with `'Goodbye'`).
+To achieve the best performance using **WebGPU**, please ensure the following:
 
-### `src/utils.js`
+1.  **Browser**: Use a Chromium-based browser (Chrome, Edge, Brave).
+2.  **Enable Flags**:
+    - Type `chrome://flags` (or `edge://flags`) in your address bar.
+    - Search for **"Unsafe WebGPU Support"** and set it to **Enabled**.
+    - **(Linux / Android users)**: Search for **"Vulkan"** (`#enable-vulkan`) and set it to **Enabled**.
+    - Relaunch your browser.
 
-- **`clamp(value, min, max)`** — Clamps `value` between `min` and `max` (inclusive).
-- **`sum(arr)`** — Sums an array of numbers (uses `math.add`).
-- **`isPositiveInteger(value)`** — Returns `true` if `value` is a positive integer.
+> 💡 **Note**: If WebGPU is not available, the app will automatically fall back to WASM (CPU), which is slower but universally compatible.
 
-### `src/index.js`
+## ✨ Features
 
-Re-exports all public functions from the above modules.
+- 🔍 **Object Detection** - Precisely identify and locate various objects in real-time.
+- ⚡ **High Performance** - Powered by WebGPU acceleration.
+- 🔒 **Privacy First** - All processing happens locally on your device.
 
-## Running tests and examples
+## 📹 Input Support
 
-- **Run tests:** `npm test` (runs `tests/run-tests.js`).
-- **Run usage example:** `npm run example` (runs `examples/usage.js`).
+| Input Type         |  Format  | Use Case                                  |
+| :----------------- | :------: | :---------------------------------------- |
+| 📷 **Image**       | JPG, PNG | Single image analysis & batch processing. |
+| 📹 **Video**       |   MP4    | Offline video analysis & content review.  |
+| 📺 **Live Camera** |  Stream  | Real-time monitoring & interactive demos. |
 
-No dependencies required; uses Node built-ins only.
+## 📊 Supported Models
 
-## TODOs and issues
+| Model        | Input Size | Params | Recommended For       |
+| :----------- | :--------- | :----- | :-------------------- |
+| **YOLO11-N** | 640        | 2.6M   | 📱 Mobile / Real-time |
+| **YOLO11-S** | 640        | 9.4M   | 🖥️ High Accuracy      |
+| **YOLO11-M** | 640        | 20.1M  | 🖥️ Higher Accuracy    |
+| **YOLO12-N** | 640        | 2.6M   | 📱 Mobile / Real-time |
+| **YOLO12-S** | 640        | 9.3M   | 🖥️ High Accuracy      |
 
-See [TODO.md](TODO.md) for planned improvements. Some in-code TODOs/FIXMEs are present in `src/utils.js`.
+_Models are licensed under [AGPL-3.0](./public/models/LICENSE.txt) via [Ultralytics](https://github.com/ultralytics/ultralytics)._
+
+## 🛠️ Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/nomi30701/yolo-object-detection-onnxruntime-web.git
+   ```
+
+2. **Navigate to project directory**
+
+   ```bash
+   cd yolo-object-detection-onnxruntime-web
+   ```
+
+3. **Install dependencies**
+
+   ```bash
+   yarn install
+   ```
+
+4. **Run Development Server**
+
+   ```bash
+   yarn dev
+   ```
+
+5. **Build for Production**
+   ```bash
+   yarn build
+   ```
+
+## 🔧 Custom Models Guide
+
+You can run your own YOLO models in this app.
+
+### Step 1: Export to ONNX
+
+Use Ultralytics to export your model. **Crucial:** Use `opset=12` for WebGPU compatibility.
+
+```python
+from ultralytics import YOLO
+
+model = YOLO("path/to/your/model.pt")
+# Export with opset=12 and dynamic shape
+model.export(format="onnx", opset=12, dynamic=True)
+```
+
+### Step 2: Load your Model
+
+You have two ways to load your model:
+
+#### Option A: Quick Test (UI Upload)
+
+Simply click the **"Add model"** button in the web interface to upload your `.onnx` file temporarily.
+
+#### Option B: Permanent Integration (Code)
+
+1. Copy your `.onnx` file to `./public/models/`.
+2. Edit `App.jsx` to add your model to the list:
+
+```jsx
+<select name="model-selector">
+  <option value="yolo11n">YOLO11n (2.6M)</option>
+  <option value="your-custom-model">Your Custom Model</option>
+</select>
+```
+
+### Step 3: Update Classes
+
+If your model uses custom classes (not COCO), you need to update the class definitions:
+
+- **UI Method**: Click **"Add Classes.json"** to upload a JSON file mapping class IDs to names.
+- **Code Method**: Update `src/utils/yolo_classes.json`.
+
+```json
+{
+  "class": {
+    "0": "person",
+    "1": "bicycle"
+  }
+}
+```
+
+## ⚙️ Configuration: Image Processing
+
+You can control how images are pre-processed via the `imgsz_type` setting:
+
+- **Dynamic (Default)**:
+  - Uses the original image aspect ratio.
+  - **Pros**: Best accuracy.
+  - **Cons**: Slower on large images; inference time varies.
+  - _Requires model exported with `dynamic=True`._
+
+- **Zero Pad (Square)**:
+  - Pads image to square and resizes to 640x640.
+  - **Pros**: Consistent, faster speed suitable for real-time video.
+  - **Cons**: Slight accuracy drop on small objects due to scaling.
+
+## ⚙️ Technical Details: Coordinate System Handling
+
+To ensure consistent bounding boxes across all devices, the following strategy is adopted:
+
+1.  **Inference**: Input is resized to the model's tensor shape (e.g., 640x640).
+2.  **Mapping**: Detected coordinates are projected back to the image's **intrinsic (natural) resolution** rather than the current HTML display size.
+3.  **Rendering**: The overlay `<canvas>` is set to the source image's true resolution. Visual alignment is handled entirely via CSS, eliminating the need for complex resize event listeners and ensuring high-DPI clarity.
