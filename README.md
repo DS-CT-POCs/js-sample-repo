@@ -1,4 +1,4 @@
-# 🚀 YOLO Object Detection Web App
+# 🚀 YOLO Object Detection Web App - COMMIT 2
 
 <div align="center">
 <img src="./preview.png" width="60%" alt="YOLO Object Detection Preview">
