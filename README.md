@@ -159,3 +159,22 @@ To ensure consistent bounding boxes across all devices, the following strategy i
 1.  **Inference**: Input is resized to the model's tensor shape (e.g., 640x640).
 2.  **Mapping**: Detected coordinates are projected back to the image's **intrinsic (natural) resolution** rather than the current HTML display size.
 3.  **Rendering**: The overlay `<canvas>` is set to the source image's true resolution. Visual alignment is handled entirely via CSS, eliminating the need for complex resize event listeners and ensuring high-DPI clarity.
+
+## 🧪 CodebaseRAG baseline questions
+
+The CodebaseRAG project uses this repository as a reference JS codebase for ingestion and query tests. Typical baseline questions the RAG agent should be able to answer after ingesting this repo include:
+
+- Where is the main React entry point (`root` render) defined?
+- In which file is the ONNX model loaded and the session created?
+- How can I change the **default YOLO model** the app uses on startup?
+- Where do I add a new model option to the **model selector** in `App.jsx`?
+- Which module handles image preprocessing (resize/normalize) before inference?
+- Where is the `imgsz_type` configuration read and applied in the code?
+- Where is the WebGPU (or WASM) execution provider configured for `onnxruntime-web`?
+- How can I force the app to run on **WASM (CPU)** instead of WebGPU?
+- Which component starts and reads from the **webcam stream**?
+- Where are detection results converted to bounding boxes and drawn on the `<canvas>`?
+- In which place can I change the **confidence threshold** or NMS settings?
+- Where is the JSON file or mapping of class IDs to labels (e.g. `yolo_classes.json`) used?
+- How would I add a new UI control to toggle drawing of bounding boxes on and off?
+- Where can I add logging to measure **end‑to‑end inference latency** for a frame?
